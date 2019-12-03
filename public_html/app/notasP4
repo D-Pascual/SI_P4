@@ -1,0 +1,12 @@
+-Comandos server:
+
+source si1pyenv/bin/activate
+python3 -m app
+
+Crear db/drop:
+    createdb -U alumnodb si1
+    dropdb -U alumnodb si1
+Volcar dump a Posgres:
+    gunzip -c dump_v1.1-P4.sql.gz | psql -U alumnodb si1
+Ejecutar scripts sql:
+    psql -h localhost -d si1 -U alumnodb -f file.sql 
