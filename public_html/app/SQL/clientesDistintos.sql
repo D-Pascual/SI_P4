@@ -1,4 +1,8 @@
-﻿SELECT
+﻿--create index idx_orderdate on orders(orderdate)
+--
+
+EXPLAIN
+SELECT
 	C.customerid,
 	firstname,
 	lastname,

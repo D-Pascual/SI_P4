@@ -9,4 +9,30 @@ Crear db/drop:
 Volcar dump a Posgres:
     gunzip -c dump_v1.1-P4.sql.gz | psql -U alumnodb si1
 Ejecutar scripts sql:
-    psql -h localhost -d si1 -U alumnodb -f file.sql 
+    psql -h localhost -d si1 -U alumnodb -f clientesDistintos.sql 
+Añadir indices:
+    psql -h localhost -d si1 -U alumnodb -c 'create index idx_orderdate on orders(orderdate)'
+
+
+
+--Query que te devuelve todos los indices que hay
+
+select
+    t.relname as table_name,
+    i.relname as index_name,
+    a.attname as column_name
+from
+    pg_class t,
+    pg_class i,
+    pg_index ix,
+    pg_attribute a
+where
+    t.oid = ix.indrelid
+    and i.oid = ix.indexrelid
+    and a.attrelid = t.oid
+    and a.attnum = ANY(ix.indkey)
+    and t.relkind = 'r'
+   -- and t.relname like 'mytable'
+order by
+    t.relname,
+    i.relname;
