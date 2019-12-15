@@ -36,3 +36,10 @@ where
 order by
     t.relname,
     i.relname;
+
+
+--Dudas:
+ EJ1:
+    -pq un index en customerid de orders no tiene efecto? por que hace seq scan de customerid de customer?
+    -explain analyze da diferentes resultados?
+    -plan vs exec time?
