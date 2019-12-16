@@ -78,8 +78,8 @@ def getListaCliMes(db_conn, mes, anio, iumbral, iintervalo, use_prepare, break0,
 def getMovies(anio):
     # conexion a la base de datos
     db_conn = db_engine.connect()
-
     query="select movietitle from imdb_movies where year = '" + anio + "'"
+    print(query)
     resultproxy=db_conn.execute(query)
 
     a = []
@@ -111,17 +111,17 @@ def getCustomer(username, password):
     else:
         return {'firstname': res['firstname'], 'lastname': res['lastname']}
     
-def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
+# def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
     
-    # Array de trazas a mostrar en la página
-    dbr=[]
+#     # Array de trazas a mostrar en la página
+#     dbr=[]
 
-    # TODO: Ejecutar consultas de borrado
-    # - ordenar consultas según se desee provocar un error (bFallo True) o no
-    # - ejecutar commit intermedio si bCommit es True
-    # - usar sentencias SQL ('BEGIN', 'COMMIT', ...) si bSQL es True
-    # - suspender la ejecución 'duerme' segundos en el punto adecuado para forzar deadlock
-    # - ir guardando trazas mediante dbr.append()
+#     # TODO: Ejecutar consultas de borrado
+#     # - ordenar consultas según se desee provocar un error (bFallo True) o no
+#     # - ejecutar commit intermedio si bCommit es True
+#     # - usar sentencias SQL ('BEGIN', 'COMMIT', ...) si bSQL es True
+#     # - suspender la ejecución 'duerme' segundos en el punto adecuado para forzar deadlock
+#     # - ir guardando trazas mediante dbr.append()
     
     try:
         pass
@@ -136,5 +136,5 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
         # TODO: confirmar cambios si todo va bien
 
         
-    return dbr
+#     return dbr
 
