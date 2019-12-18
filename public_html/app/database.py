@@ -3,7 +3,7 @@
 import os
 import sys, traceback, time
 import datetime
-
+import sqlalchemy
 from sqlalchemy import create_engine
 
 # configurar el motor de sqlalchemy
@@ -136,21 +136,23 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
                                               FROM orders
                                               WHERE customerid = {});""".format(customerid)
     db_conn.execute("BEGIN;")
-    dbr.append("Accion: Begin")
+    dbr.append("Accion: BEGIN")
 
     if bFallo is True:
         try:
-            if bCommit:
-                db_conn.execute("commit")
-                db_conn.execute("begin")
             # Ejecutar consultas
             db_conn.execute(delete_orderdetail)
             dbr.append("Accion: Borrar orderdetails de order de customer")
+            if bCommit:
+                db_conn.execute("COMMIT;")
+                dbr.append("Accion: COMMIT")
+                db_conn.execute("BEGIN;")
+                dbr.append("Accion: BEGIN")
             db_conn.execute(delete_customer)
             dbr.append("Accion: Borrar customer")
             db_conn.execute(delete_order)
             dbr.append("Accion: Borrar orders de customer")
-        except Exception as e:
+        except (sqlalchemy.exc.NoReferenceError, sqlalchemy.exc.IntegrityError):
             # Deshacer en caso de error
             db_conn.execute("ROLLBACK;")
             dbr.append("Accion: ROLLBACK")
@@ -168,7 +170,7 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
             dbr.append("Accion: Borrar orders de customer")
             db_conn.execute(delete_customer)      
             dbr.append("Accion: Borrar customer")
-        except Exception as e:
+        except (sqlalchemy.exc.NoReferenceError, sqlalchemy.exc.IntegrityError):
             # Deshacer en caso de error
             db_conn.execute("ROLLBACK;")
             dbr.append("Accion (no deberia): ROLLBACK")
@@ -180,4 +182,3 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
     dbCloseConnect(db_conn)
    
     return dbr
-
