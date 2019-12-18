@@ -111,30 +111,73 @@ def getCustomer(username, password):
     else:
         return {'firstname': res['firstname'], 'lastname': res['lastname']}
     
-# def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
+def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
     
-#     # Array de trazas a mostrar en la página
-#     dbr=[]
+    db_conn = db_engine.connect()
 
-#     # TODO: Ejecutar consultas de borrado
-#     # - ordenar consultas según se desee provocar un error (bFallo True) o no
-#     # - ejecutar commit intermedio si bCommit es True
-#     # - usar sentencias SQL ('BEGIN', 'COMMIT', ...) si bSQL es True
-#     # - suspender la ejecución 'duerme' segundos en el punto adecuado para forzar deadlock
-#     # - ir guardando trazas mediante dbr.append()
-    
-    try:
-        pass
-        # TODO: ejecutar consultas
+    # Array de trazas a mostrar en la página
+    dbr=[]
 
-    except Exception as e:
-        pass
-        # TODO: deshacer en caso de error
+    # Ejecutar consultas de borrado
+    # - ordenar consultas según se desee provocar un error (bFallo True) o no
+    # - ejecutar commit intermedio si bCommit es True
+    # - usar sentencias SQL ('BEGIN', 'COMMIT', ...) si bSQL es True
+    # - suspender la ejecución 'duerme' segundos en el punto adecuado para forzar deadlock
+    # - ir guardando trazas mediante dbr.append()
 
-    else:
-        pass
-        # TODO: confirmar cambios si todo va bien
+    delete_customer = """DELETE FROM customers
+                         WHERE customerid = {};""".format(customerid)
 
-        
-#     return dbr
+    delete_order = """DELETE FROM orders
+                      WHERE customerid = {};""".format(customerid)
+
+    delete_orderdetail = """DELETE FROM orderdetail
+                            WHERE orderid IN (SELECT orderid
+                                              FROM orders
+                                              WHERE customerid = {});""".format(customerid)
+    db_conn.execute("BEGIN;")
+    dbr.append("Accion: Begin")
+
+    if bFallo is True:
+        try:
+            if bCommit:
+                db_conn.execute("commit")
+                db_conn.execute("begin")
+            # Ejecutar consultas
+            db_conn.execute(delete_orderdetail)
+            dbr.append("Accion: Borrar orderdetails de order de customer")
+            db_conn.execute(delete_customer)
+            dbr.append("Accion: Borrar customer")
+            db_conn.execute(delete_order)
+            dbr.append("Accion: Borrar orders de customer")
+        except Exception as e:
+            # Deshacer en caso de error
+            db_conn.execute("ROLLBACK;")
+            dbr.append("Accion: ROLLBACK")
+        else:
+            # Confirmar cambios si todo va bien
+            db_conn.execute("COMMIT;")
+            dbr.append("Accion (no deberia): COMMIT")
+    else: 
+        # Transaccion sin fallos
+        try:
+            # Ejecutar consultas
+            db_conn.execute(delete_orderdetail)
+            dbr.append("Accion: Borrar orderdetails de order de customer")
+            db_conn.execute(delete_order)
+            dbr.append("Accion: Borrar orders de customer")
+            db_conn.execute(delete_customer)      
+            dbr.append("Accion: Borrar customer")
+        except Exception as e:
+            # Deshacer en caso de error
+            db_conn.execute("ROLLBACK;")
+            dbr.append("Accion (no deberia): ROLLBACK")
+        else:
+            # Confirmar cambios si todo va bien
+            db_conn.execute("COMMIT;")
+            dbr.append("Accion: COMMIT")
+
+    dbCloseConnect(db_conn)
+   
+    return dbr
 

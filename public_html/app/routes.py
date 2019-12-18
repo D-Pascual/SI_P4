@@ -8,17 +8,17 @@ import os
 import sys
 import time
 
-@app.route('/borraCliente', methods=['POST','GET'])
+@app.route('/borraCliente', methods=['GET'])
 def borraCliente():
-    if 'customerid' in request.form:
-        customerid = request.form["customerid"]
-        bSQL       = request.form["txnSQL"]
-        bCommit = "bCommit" in request.form
-        bFallo  = "bFallo"  in request.form
-        duerme  = request.form["duerme"]
+    if 'customerid' in request.args:
+        customerid = request.args["customerid"]
+        bSQL       = request.args["txnSQL"]
+        bCommit = "bCommit" in request.args
+        bFallo  = "bFallo"  in request.args
+        duerme  = request.args["duerme"]
         dbr = database.delCustomer(customerid, bFallo, bSQL=='1', int(duerme), bCommit)
         return render_template('borraCliente.html', dbr=dbr)
-    else:                
+    else:
         return render_template('borraCliente.html')
     
 @app.route('/xSearchInjection', methods=['GET'])
