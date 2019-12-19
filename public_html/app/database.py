@@ -159,7 +159,7 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
         else:
             # Confirmar cambios si todo va bien
             db_conn.execute("COMMIT;")
-            dbr.append("Accion (no deberia): COMMIT")
+            dbr.append("Accion: COMMIT")
     else: 
         # Transaccion sin fallos
         try:
@@ -173,7 +173,7 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
         except (sqlalchemy.exc.NoReferenceError, sqlalchemy.exc.IntegrityError):
             # Deshacer en caso de error
             db_conn.execute("ROLLBACK;")
-            dbr.append("Accion (no deberia): ROLLBACK")
+            dbr.append("Accion: ROLLBACK")
         else:
             # Confirmar cambios si todo va bien
             db_conn.execute("COMMIT;")
