@@ -143,6 +143,7 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
             # Ejecutar consultas
             db_conn.execute(delete_orderdetail)
             dbr.append("Accion: Borrar orderdetails de order de customer")
+            db_conn.execute("SELECT pg_sleep({})".format(duerme)) # Editado para ejercicio F
             if bCommit:
                 db_conn.execute("COMMIT;")
                 dbr.append("Accion: COMMIT")
@@ -166,6 +167,7 @@ def delCustomer(customerid, bFallo, bSQL, duerme, bCommit):
             # Ejecutar consultas
             db_conn.execute(delete_orderdetail)
             dbr.append("Accion: Borrar orderdetails de order de customer")
+            db_conn.execute("SELECT pg_sleep({})".format(duerme)) # Editado para ejercicio F
             db_conn.execute(delete_order)
             dbr.append("Accion: Borrar orders de customer")
             db_conn.execute(delete_customer)      

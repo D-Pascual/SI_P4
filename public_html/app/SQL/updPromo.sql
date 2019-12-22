@@ -1,24 +1,6 @@
-/* ALTER TABLE customers
-ADD COLUMN promo numeric; */
+ALTER TABLE customers
+ADD COLUMN promo numeric;
 
-/* --Procedimiento del trigger
-create or replace function update_promo() returns trigger as $$
-	begin
-	update orderdetail o set price = price - (select ((price*NEW.promo)/100) from products p where o.prod_id = p.prod_id) 
-    where prod_id in 
-    (select prod_id from orderdetail inner join orders on orderdetail.orderid = orders.orderid where orders.status is null and customerid = NEW.customerid);
-    
-    --alerta
-
-	return NEW;
-	end;
-	$$
-	language 'plpgsql';
-
- --Crear trigger
-drop trigger if exists updPromo on customers;
-create trigger updPromo after update of promo on customers
-	for each row execute procedure update_promo(); */
 	--Procedimiento del trigger
 create or replace function update_promo() returns trigger as $$
 	begin
