@@ -10,7 +10,7 @@ Volcar dump a Posgres:
     gunzip -c dump_v1.1-P4.sql.gz | psql -U alumnodb si1
 Ejecutar scripts sql:
     psql -h localhost -d si1 -U alumnodb -f clientesDistintos.sql 
-Añadir indices:
+Añadir indices por terminal:
     psql -h localhost -d si1 -U alumnodb -c 'create index idx_orderdate on orders(orderdate)'
 
 
